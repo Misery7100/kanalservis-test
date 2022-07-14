@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+
+  # main django api app run on gunicorn
+  app:
+    build: .
+    container_name: app
+    expose:
+      - 8000
+    command: ./start-dev
+    restart: unless-stopped
+  
+  # message passing interface
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+  
+  # tasking interface worker
+  celery_worker:
+    build: .
+    container_name: celery-worker
+    command: ./start-worker
+    restart: unless-stopped
+  
+  # tasking interface scheduler
+  celery_beat:
+    build: .
+    container_name: celery-beat
+    command: ./start-beat
+    restart: unless-stopped
+  
+  # dev database
+  database:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - 5433:5432
+    restart: always
+    env_file:
+      - ./secret/.env

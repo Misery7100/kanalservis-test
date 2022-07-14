@@ -1,0 +1,15 @@
+django
+django-bulk-update-or-create
+django-celery-beat
+django-celery-results
+gspread 
+gunicorn
+oauth2client
+prettytable
+psycopg2-binary
+python-dotenv
+python-telegram-bot
+PyYAML
+redis
+requests
+xmltodict

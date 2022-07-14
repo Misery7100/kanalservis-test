@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/bin/sh -c "python manage.py makemigrations
+            python manage.py migrate
+            gunicorn -c ./gunicorn/dev/conf.py"
