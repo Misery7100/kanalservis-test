@@ -17,8 +17,12 @@ Dockerized app for pulling and manipulating data from Google Sheets via Google A
 3. Create file `src/django/secret/.env` and paste data
 4. Copy GCP credentials data using another onetimesecret (WORKS ONLY ONCE!):[click](https://onetimesecret.com/secret/b1d1romws4jyj1yujs02yrx2jbu0bzc)
 5. Create file `src/django/secret/creds.json` and paste data
+6. Start chat with bot `kanalservistest_bot` and send message `/subscribe` to receive notifications
 
-Note: this annoying steps with manual secure data re-creation caused by the impossibility to communicate/connect with task inspectors via HR bot
+### Notes: 
+
+- Since it test task bot uses only last chat ID where `/subscribe` message occurs
+- This annoying steps with manual secure data re-creation caused by the impossibility to communicate/connect with task inspectors via HR bot
 
 ## Usage
 

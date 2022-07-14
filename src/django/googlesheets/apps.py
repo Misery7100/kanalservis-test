@@ -1,5 +1,11 @@
+import logging
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+
+# ------------------------- #
+
+logger = logging.getLogger(__name__)
 
 # ------------------------- #
 
@@ -12,6 +18,29 @@ def init_data_and_exchange_rate(sender: AppConfig, **kwargs) -> None:
 
     update_USD_exchange_rate.apply_async()
     update_table_from_sheet.apply_async(countdown=1)
+
+# ------------------------- #
+
+def update_chat_id_telegram_bot() -> None:
+    """
+    Update chat ID with last value for testing purposes.
+    """
+
+    import os
+    import json
+    import requests
+    
+    url = f"https://api.telegram.org/bot{os.environ['TG_BOT_TOKEN']}/getUpdates"
+    response = requests.get(url)
+    data = response.json()
+
+    messages = tuple(filter(lambda x: 'message' in x.keys(), data['result']))
+    subscriptions = tuple(filter(lambda x: x['message']['text'] == '/subscribe', messages))
+    max_datetime = sorted(subscriptions, key=lambda x: x['message']['date'], reverse=True)[0]
+
+    new_chat_id = str(max_datetime['message']['chat']['id'])
+
+    os.environ['TG_BOT_CHAT_ID'] = new_chat_id
 
 # ------------------------- #
 
@@ -52,7 +81,7 @@ def get_or_create_scheduled_tasks(sender: AppConfig, **kwargs) -> None:
         task='googlesheets.tasks.update_table_from_sheet'
     )
     PeriodicTask.objects.get_or_create(
-        interval=interval_15m,
+        interval=interval_15s,
         name='googlesheets.tasks.notify_about_expired_delivery',
         task='googlesheets.tasks.notify_about_expired_delivery'
     )
@@ -78,6 +107,10 @@ class GooglesheetsConfig(AppConfig):
     # ......................... #
 
     def ready(self) -> None:
+
+        # update chat id
+    
+        update_chat_id_telegram_bot()
 
         # link post migrate state and function calls
 
