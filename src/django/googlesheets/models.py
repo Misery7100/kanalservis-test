@@ -6,6 +6,10 @@ from django.db import models
 # ------------------------- #
 
 class Order(models.Model):
+    """
+    Main order model to store data from external Google Sheet.
+    """
+
     objects = BulkUpdateOrCreateQuerySet.as_manager()
 
     order_id = models.CharField(max_length=100, unique=True)
