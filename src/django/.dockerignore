@@ -28,3 +28,6 @@ coverage.xml
 testing
 nginx
 requirements.in
+
+Dockerfile
+.dockerignore
