@@ -40,17 +40,16 @@ def get_or_create_scheduled_tasks(sender: AppConfig, **kwargs) -> None:
             minute=0, 
             hour=0
         )
+    crontab_9am, _ = CrontabSchedule.objects.get_or_create(
+            minute=0, 
+            hour=9
+        )
 
     # interval tasks
     PeriodicTask.objects.get_or_create(
         interval=interval_15s,
         name='googlesheets.tasks.update_table_from_sheet',
         task='googlesheets.tasks.update_table_from_sheet'
-    )
-    PeriodicTask.objects.get_or_create(
-        interval=interval_3h,
-        name='googlesheets.tasks.update_USD_exchange_rate',
-        task='googlesheets.tasks.update_USD_exchange_rate'
     )
     PeriodicTask.objects.get_or_create(
         interval=interval_15m,
@@ -63,6 +62,11 @@ def get_or_create_scheduled_tasks(sender: AppConfig, **kwargs) -> None:
         crontab=crontab_midnight,
         name='googlesheets.tasks.reset_notification_status',
         task='googlesheets.tasks.reset_notification_status'
+    )
+    PeriodicTask.objects.get_or_create(
+        crontab=crontab_9am,
+        name='googlesheets.tasks.update_USD_exchange_rate',
+        task='googlesheets.tasks.update_USD_exchange_rate'
     )
 
 # ------------------------- #
