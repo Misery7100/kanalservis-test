@@ -48,11 +48,11 @@ def schedule_data_update(sender: AppConfig, **kwargs) -> None:
         name='googlesheets.tasks.update_USD_exchange_rate',
         task='googlesheets.tasks.update_USD_exchange_rate'
     )
-    PeriodicTask.objects.get_or_create(
-        interval=interval_15s,
-        name='googlesheets.tasks.notify_about_expired_delivery',
-        task='googlesheets.tasks.notify_about_expired_delivery'
-    )
+    # PeriodicTask.objects.get_or_create(
+    #     interval=interval_15m,
+    #     name='googlesheets.tasks.notify_about_expired_delivery',
+    #     task='googlesheets.tasks.notify_about_expired_delivery'
+    # )
 
     # crontab
     PeriodicTask.objects.get_or_create(

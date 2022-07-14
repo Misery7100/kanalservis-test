@@ -1,20 +1,17 @@
-from django.utils.timezone import now
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 
 from googlesheets.models import Order
 
 # ------------------------- #
 
-class TicketSerializer(ModelSerializer):
-    delivery_expired = SerializerMethodField()
-
-    # ......................... #
+class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = '__all__'
-    
-    # ......................... #
-    
-    def get_delivery_expired(self, obj):
-        return (now - obj.delivery_date).days < 0
+        fields = (
+            'index_number',
+            'order_id',
+            'price_USD',
+            'price_RUB',
+            'delivery_date'
+        )

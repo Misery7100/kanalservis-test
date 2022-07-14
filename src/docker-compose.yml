@@ -2,13 +2,15 @@ version: '3.9'
 services:
 
   # django backend run on gunicorn
-  app:
+  backend:
     build: ./django
-    container_name: app
-    expose:
-      - 8000
+    container_name: backend
+    ports:
+      - 8000:8000
     command: ./start-dev
     restart: unless-stopped
+    links:
+      - redis
   
   # message passing interface
   redis:
@@ -39,11 +41,3 @@ services:
     restart: always
     env_file:
       - ./django/secret/.env
-  
-  # frontend
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - 3000:3000
-    restart: unless-stopped
