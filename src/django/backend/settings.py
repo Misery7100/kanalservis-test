@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'googlesheets.apps.GooglesheetsConfig',
     'django_celery_results',
     'django_celery_beat',
-    'corsheaders',
     'rest_framework'
 ]
 
@@ -57,7 +56,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -142,9 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_BROKER_URL = 'redis://redis:6379'
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-]
+# Rest framework settings
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (

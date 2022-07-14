@@ -3,7 +3,6 @@ djangorestframework
 django-bulk-update-or-create
 django-celery-beat
 django-celery-results
-django-cors-headers
 gspread 
 gunicorn
 oauth2client

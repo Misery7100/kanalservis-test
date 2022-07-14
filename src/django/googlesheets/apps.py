@@ -4,6 +4,9 @@ from django.db.models.signals import post_migrate
 # ------------------------- #
 
 def init_data_and_exchange_rate(sender: AppConfig, **kwargs) -> None:
+    """
+    Initialize data and exchange rate after migration.
+    """
 
     from googlesheets.tasks import update_USD_exchange_rate, update_table_from_sheet
 
@@ -12,18 +15,19 @@ def init_data_and_exchange_rate(sender: AppConfig, **kwargs) -> None:
 
 # ------------------------- #
 
-def schedule_data_update(sender: AppConfig, **kwargs) -> None:
+def get_or_create_scheduled_tasks(sender: AppConfig, **kwargs) -> None:
     """
-    Configure ... with celery and django_celery_beat.
+    Configure scheduled tasks using celery.
     """
 
     from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule
 
+    # construct schedule objects
     interval_15s, _ = IntervalSchedule.objects.get_or_create(
             every=15,
             period=IntervalSchedule.SECONDS,
         )
-    interval_15min, _ = IntervalSchedule.objects.get_or_create(
+    interval_15m, _ = IntervalSchedule.objects.get_or_create(
             every=15,
             period=IntervalSchedule.MINUTES,
         )
@@ -37,7 +41,7 @@ def schedule_data_update(sender: AppConfig, **kwargs) -> None:
             hour=0
         )
 
-    # interval
+    # interval tasks
     PeriodicTask.objects.get_or_create(
         interval=interval_15s,
         name='googlesheets.tasks.update_table_from_sheet',
@@ -48,13 +52,13 @@ def schedule_data_update(sender: AppConfig, **kwargs) -> None:
         name='googlesheets.tasks.update_USD_exchange_rate',
         task='googlesheets.tasks.update_USD_exchange_rate'
     )
-    # PeriodicTask.objects.get_or_create(
-    #     interval=interval_15m,
-    #     name='googlesheets.tasks.notify_about_expired_delivery',
-    #     task='googlesheets.tasks.notify_about_expired_delivery'
-    # )
+    PeriodicTask.objects.get_or_create(
+        interval=interval_15m,
+        name='googlesheets.tasks.notify_about_expired_delivery',
+        task='googlesheets.tasks.notify_about_expired_delivery'
+    )
 
-    # crontab
+    # crontab scheduled tasks
     PeriodicTask.objects.get_or_create(
         crontab=crontab_midnight,
         name='googlesheets.tasks.reset_notification_status',
@@ -70,5 +74,8 @@ class GooglesheetsConfig(AppConfig):
     # ......................... #
 
     def ready(self) -> None:
-        post_migrate.connect(schedule_data_update, sender=self)
+
+        # link post migrate state and function calls
+
+        post_migrate.connect(get_or_create_scheduled_tasks, sender=self)
         post_migrate.connect(init_data_and_exchange_rate, sender=self)

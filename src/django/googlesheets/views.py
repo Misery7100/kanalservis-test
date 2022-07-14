@@ -18,6 +18,13 @@ logger = logging.getLogger(__name__)
 
 @api_view(http_method_names=['GET'])
 def get_all_orders(request: Request) -> Response:
+    """
+    Retrieve all objects in serialized form from Order table. 
+
+    Returns:
+        Response:
+            200: all objects from Order table
+    """
 
     queryset = Order.objects.all()
     serializer = OrderSerializer(queryset, many=True)
@@ -27,6 +34,15 @@ def get_all_orders(request: Request) -> Response:
 # ------------------------- #
 
 def get_accum_price_in_time(currency: str) -> Dict[str, str]:
+    """
+    Calculate accumulated price in time for specified currency.
+
+    Args:
+        currency (str): currency code in ISO-3 format (USD or RUB)
+
+    Returns:
+        Dict[str, str]: accumulated prices, sorted chronologically
+    """
 
     assert currency in ["USD", "RUB"]
 
@@ -48,6 +64,15 @@ def get_accum_price_in_time(currency: str) -> Dict[str, str]:
 # ------------------------- #
 
 def get_total_price(currency: str) -> float:
+    """
+    Calculate total price over all time for specified currency.
+
+    Args:
+        currency (str): currency code in ISO-3 format (USD or RUB)
+
+    Returns:
+        float: total price
+    """
 
     assert currency in ["USD", "RUB"]
 
@@ -60,6 +85,13 @@ def get_total_price(currency: str) -> float:
 
 @api_view(http_method_names=['GET'])
 def get_accum_price_usd_in_time(request: Request) -> Response:
+    """
+    Get accumulated price in time for USD currency.
+
+    Returns:
+        Response:
+            200: accumulated price in time for USD
+    """
     
     data = get_accum_price_in_time("USD")
 
@@ -69,6 +101,13 @@ def get_accum_price_usd_in_time(request: Request) -> Response:
 
 @api_view(http_method_names=['GET'])
 def get_accum_price_rub_in_time(request: Request) -> Response:
+    """
+    Get accumulated price in time for RUB currency.
+
+    Returns:
+        Response:
+            200: accumulated price in time for RUB
+    """
     
     data = get_accum_price_in_time("RUB")
 
@@ -78,6 +117,13 @@ def get_accum_price_rub_in_time(request: Request) -> Response:
 
 @api_view(http_method_names=['GET'])
 def get_total_price_usd(request: Request) -> Response:
+    """
+    Get total price for USD currency.
+
+    Returns:
+        Response:
+            200: total price for USD
+    """
 
     total = get_total_price("USD")
 
@@ -87,6 +133,13 @@ def get_total_price_usd(request: Request) -> Response:
 
 @api_view(http_method_names=['GET'])
 def get_total_price_rub(request: Request) -> Response:
+    """
+    Get total price for RUB currency.
+
+    Returns:
+        Response:
+            200: total price for RUB
+    """
 
     total = get_total_price("RUB")
 
